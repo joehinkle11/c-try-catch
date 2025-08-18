@@ -159,6 +159,7 @@ declare_result(double); declare_result_ptr(double);
 declare_result(char); declare_result_ptr(char);
 declare_result(short); declare_result_ptr(short);
 declare_result(long); declare_result_ptr(long);
+declare_result_ptr(void);
 
 // Declaration for void type
 #if !defined(DISABLE_CTRYCATCH)
