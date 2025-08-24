@@ -123,19 +123,32 @@ __attribute__((warn_unused_result)) typedef struct {
 })
 #endif
 
+// Conversion
+#if defined(DISABLE_CTRYCATCH)
+#define convert_error(error) error
+#define convert_always_error(error) error
+#else
+#define convert_error(error) ({ \
+    __typeof__(error) __error = error; \
+    __result_context._error = __error; \
+    __result_context; \
+})
+#define convert_always_error(expression) ({ \
+    result_always_error alwaysError = expression; \
+    __result_context._error = alwaysError._error; \
+    __result_context; \
+})
+#endif
+
 // Throw
 #if defined(DISABLE_CTRYCATCH)
 #define throw_always_error(error) throw_error(error)
 #else
 #define throw_error(error) ({ \
-    __typeof__(error) __error = error; \
-    __result_context._error = __error; \
-    return __result_context; \
+    return convert_error(error); \
 })
 #define throw_always_error(expression) ({ \
-    result_always_error alwaysError = expression; \
-    __result_context._error = alwaysError._error; \
-    return __result_context; \
+    return convert_always_error(expression); \
 })
 #endif
 
