@@ -35,10 +35,12 @@ struct __void_result_value {
 #if defined(DISABLE_CTRYCATCH)
 #define result(TYPE) __typeof__( __builtin_choose_expr(__builtin_types_compatible_p(__typeof__(TYPE), void), new_result_void, *( (TYPE*)0 )) )
 #define result_ptr(TYPE) TYPE*
+#define result_const_ptr(TYPE) const TYPE*
 #define result_always_error struct __void_result_value __attribute__((noreturn))
 #else
 #define result(TYPE) result_##TYPE
 #define result_ptr(TYPE) result_##TYPE##_ptr
+#define result_const_ptr(TYPE) result_##TYPE##_const_ptr
 __attribute__((warn_unused_result)) typedef struct {
     __unused int8_t _value;
     CTRYCATCH_CUSTOM_ERROR_TYPE _error;
@@ -60,6 +62,7 @@ __attribute__((warn_unused_result)) typedef struct {
 #if defined(DISABLE_CTRYCATCH)
 #define declare_result(TYPE)
 #define declare_result_ptr(TYPE)
+#define declare_result_const_ptr(TYPE)
 #else
 #define declare_result(TYPE) __attribute__((warn_unused_result)) typedef struct result(TYPE) { \
     TYPE _value; \
@@ -69,6 +72,10 @@ __attribute__((warn_unused_result)) typedef struct {
     TYPE* _value; \
     void* _error; \
 } result_ptr(TYPE)
+#define declare_result_const_ptr(TYPE) __attribute__((warn_unused_result)) typedef struct result_const_ptr(TYPE) { \
+    const TYPE* _value; \
+    void* _error; \
+} result_const_ptr(TYPE)
 #endif
 
 // Create a result value
@@ -89,10 +96,12 @@ __attribute__((warn_unused_result)) typedef struct {
 #if defined(DISABLE_CTRYCATCH)
 #define result_context(TYPE)
 #define result_context_ptr(TYPE)
+#define result_context_const_ptr(TYPE)
 #define result_context_always_error
 #else
 #define result_context(TYPE) result(TYPE) __result_context = {0}
 #define result_context_ptr(TYPE) result_ptr(TYPE) __result_context = {0}
+#define result_context_const_ptr(TYPE) result_const_ptr(TYPE) __result_context = {0}
 #define result_context_always_error result_always_error __result_context = {0}
 #endif
 
@@ -167,11 +176,11 @@ __attribute__((warn_unused_result)) typedef struct {
 #endif
 
 // Default declarations
-declare_result(int); declare_result_ptr(int);
-declare_result(double); declare_result_ptr(double);
-declare_result(char); declare_result_ptr(char);
-declare_result(short); declare_result_ptr(short);
-declare_result(long); declare_result_ptr(long);
+declare_result(int); declare_result_ptr(int); declare_result_const_ptr(int);
+declare_result(double); declare_result_ptr(double); declare_result_const_ptr(double);
+declare_result(char); declare_result_ptr(char); declare_result_const_ptr(char);
+declare_result(short); declare_result_ptr(short); declare_result_const_ptr(short);
+declare_result(long); declare_result_ptr(long); declare_result_const_ptr(long);
 declare_result_ptr(void);
 
 // Declaration for void type
