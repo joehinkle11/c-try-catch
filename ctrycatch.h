@@ -38,9 +38,9 @@ struct __void_result_value {
 #define result_const_ptr(TYPE) const TYPE*
 #define result_always_error struct __void_result_value __attribute__((noreturn))
 #else
-#define result(TYPE) result_##TYPE
-#define result_ptr(TYPE) result_##TYPE##_ptr
-#define result_const_ptr(TYPE) result_##TYPE##_const_ptr
+#define result(TYPE) __result_##TYPE
+#define result_ptr(TYPE) __result_##TYPE##_ptr
+#define result_const_ptr(TYPE) __result_##TYPE##_const_ptr
 __attribute__((warn_unused_result)) typedef struct {
     __unused int8_t _value;
     CTRYCATCH_CUSTOM_ERROR_TYPE _error;
